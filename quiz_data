@@ -1,23 +1,23 @@
 quiz_data = [
     {
-        "question": "What is the capital of France?",
-        "choices": ["Paris", "London", "Berlin", "Madrid"],
-        "answer": "Paris"
+        "question": "When presented with a new project, your first reaction is to:",
+        "choices": ["Create an action plan and delegate tasks.", "Think of innovative approaches to tackle it.", "Support others in their roles and assist where needed.", "Support others in their roles and assist where needed.","Reach out to your network for insights and advice."],
+       
     },
     {
-        "question": "What is the largest planet in our solar system?",
-        "choices": ["Jupiter", "Saturn", "Mars", "Earth"],
-        "answer": "Jupiter"
+        "question": "You deal with work-related stress by:",
+        "choices": ["Taking control of the situation and leading the team through the challenge.", "Brainstorming creative solutions to alleviate the issue.", "Offering a helping hand to ease the burden on your coworkers.", "Gathering data to understand the stressors and systematically addressing them.","Connecting with others to vent and find comfort in shared experiences."],
+       
     },
     {
-        "question": "What is the chemical symbol for gold?",
-        "choices": ["Go", "Au", "Ag", "Gd"],
-        "answer": "Au"
+        "question": "During a team meeting, you are more likely to:",
+        "choices": ["Direct the discussions and make executive decisions.", "Suggest out-of-the-box ideas others haven't considered.", "Listen actively and provide encouragement and support.", "Closely examine reports and figures before drawing conclusions.","Network and build rapport with coworkers."],
+    
     },
     {
         "question": "Which country is known as the 'Land of the Rising Sun'?",
         "choices": ["China", "Japan", "South Korea", "Thailand"],
-        "answer": "Japan"
+     
     }
-    # Add more questions here
+   
 ]
