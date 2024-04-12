@@ -18,6 +18,11 @@ quiz_data = [
         "question": "If a conflict arises in the workplace, you tend to:?",
         "choices": ["Step in to mediate and resolve the issue authoritatively.", "Think creatively to find an amicable solution that satisfies all parties.", "Calm tensions by lending a sympathetic ear and providing emotional support.", "Analyze the root cause and propose a logical resolution.","Leverage your interpersonal skills to facilitate communication between parties."],
      
+    },
+    {
+        "question": "When it comes to multitasking, you:?",
+        "choices": ["Step in to mediate and resolve the issue authoritatively.", "Think creatively to find an amicable solution that satisfies all parties.", "Calm tensions by lending a sympathetic ear and providing emotional support.", "Analyze the root cause and propose a logical resolution.","Leverage your interpersonal skills to facilitate communication between parties."],
+     
     }
    
 ]
