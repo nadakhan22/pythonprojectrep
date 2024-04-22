@@ -1,1 +1,278 @@
+import csv
+import tkinter as tk
+from tkinter import messagebox, ttk
+from ttkbootstrap import Style
+from QuizData import quiz_data
+from QuizData import field_names
 
+class PersonalityQuizApp(tk.Tk):
+    def __init__(self, *args, **kwargs):
+        tk.Tk.__init__(self, *args, **kwargs)
+
+        # Set the title of the window
+        self.title("Personality Quiz")
+
+        # Create a container to hold multiple frames
+        style = Style(theme="minty")
+        # Configure the font size for the question and choice buttons
+        style.configure("TLabelFrame", anchor="center", relief="raised")
+        style.configure("TLabel", font=("Helvetica", 18))
+        style.configure("TButton", font=("Helvetica", 16))
+        container = tk.Frame(self)
+        container.pack(side="top", fill="both", expand=True)
+        container.grid_rowconfigure(0, weight=1)
+        container.grid_columnconfigure(0, weight=1)
+
+        self.frames = {}
+        # Create and add frames to the container
+
+        for F in (StartPage, QuizPage, ResultsPage):
+            if F=="ResultsPage":
+                frame = F(container, self,result)
+            else:
+                frame = F(container,self)
+            self.frames[F] = frame
+            frame.grid(row=0, column=0, sticky="nsew")
+
+        # Show the initial frame
+        self.show_frame(StartPage)
+
+    def show_frame(self, cont):
+        frame = self.frames[cont]
+        frame.tkraise()
+
+
+class StartPage(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        label = tk.Label(self, text="Start Page")
+        label.grid(row=0,column=0,pady=10, padx=10)
+
+        self.userName=tk.StringVar()
+        self.email=tk.StringVar()
+        self.position=tk.StringVar()
+        self.field=tk.StringVar()
+        self.current_question=0
+
+        welcomeFrame = ttk.LabelFrame(self, relief='flat')
+        welcomeFrame.grid(row=0, column=0,padx=40, pady=10)
+
+        message = "Welcome to the Workplace Personality Quiz!\nBefore you begin, kindly enter the following details:"
+        welcomeMessage = ttk.Label(welcomeFrame, text=message)
+        welcomeMessage.config(font=('Helvetica', 22))
+        welcomeMessage.grid(row=0, column=1, padx=10, pady=10)
+
+        nameLabel = ttk.Label(welcomeFrame, text="Name:")
+        nameLabel.grid(row=1, column=0, sticky='news')
+
+        nameTxt = tk.Entry(welcomeFrame, textvariable=self.userName,width=5)
+        nameTxt.grid(row=1, column=1, padx=20, sticky='news')
+
+        emailLabel = ttk.Label(welcomeFrame, text="E-mail address:")
+        emailLabel.grid(row=1, column=2, sticky='news')
+
+        emailTxt = tk.Entry(welcomeFrame, textvariable=self.email, width=20)
+        emailTxt.grid(row=1, column=3, padx=15, sticky='news')
+
+        positionLabel = ttk.Label(welcomeFrame, text="Position:", width=20)
+        positionLabel.grid(row=2, column=1, sticky='news')
+
+        positionValueBox = ttk.Combobox(welcomeFrame, textvariable=self.position,
+                                        values=['Entry-level', 'Mid-Senior Level', 'Senior Level', 'Executive Role'],
+                                        width=20)
+        positionValueBox.grid(row=2, column=2, sticky='w')
+
+        fieldLabel = ttk.Label(welcomeFrame, text="Field of Work:")
+        fieldLabel.grid(row=2, column=3, padx=50)
+
+        fieldValueBox = ttk.Combobox(welcomeFrame,textvariable=self.field,values=field_names)
+        fieldValueBox.grid(row=2, column=4)
+
+
+        saveButton = ttk.Button(
+            welcomeFrame,
+            text="Save Details",
+            command=self.validate_details,
+            style='success.TButton'
+
+        )
+        saveButton.grid(row=3, column=1, pady=10)
+
+        startQuizButton = ttk.Button(
+            welcomeFrame,
+            text="Start Quiz",
+            command=lambda: controller.show_frame(QuizPage),
+            style='success.TButton'
+        )
+        startQuizButton.grid(row=3, column=2, pady=10, sticky='e')
+
+    def validate_details(self):
+
+        if self.userName.get() == '' or self.position.get() == '' or self.field.get() == '' or self.email.get()=='':
+            tk.messagebox.showwarning(title="Error", message="Please fill the blank fields")
+        else:
+            self.save_details()
+
+    def save_details(self):
+
+        userData = [self.userName.get(), self.email.get(),self.position.get(), self.field.get()]
+
+        with open('Userdetails.csv', 'a') as filewriter:
+             filewritercsv = csv.writer(filewriter)
+             filewritercsv.writerow(userData)
+             tk.messagebox.showinfo(message='Details Saved!')
+
+class QuizPage(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller=controller
+        custom_frame = ttk.Frame(self)
+        custom_frame.pack(padx=20,pady=20)
+        self.current_question=0
+
+        self.personality_score = {"Leader": 0,
+                                  "Innovator": 0,
+                                  "Supporter": 0,
+                                  "Analyst": 0,
+                                  "Networker": 0
+                                  }
+        self.qs_label = ttk.Label(
+            custom_frame,
+            anchor="center",
+            wraplength=500,
+            padding=10
+        )
+        self.qs_label.pack(pady=10)
+
+        self.choice_btns = []
+        for i in range(5):
+            self.choice_button = ttk.Button(
+                custom_frame,
+                command=lambda i=i: self.check_answer(i)
+            )
+            self.choice_button.pack(pady=5)
+            self.choice_btns.append(self.choice_button)
+
+        #Create the next button
+        self.next_btn = ttk.Button(
+            custom_frame,
+            text="Next",
+            command=self.next_question,
+            state="disabled"
+        )
+        self.next_btn.pack(pady=10)
+
+
+        self.show_question()
+
+    def show_question(self):
+            # Get the current question from the quiz_data list
+            #global current_question
+            question = quiz_data[self.current_question]
+            self.qs_label.config(text=question["question"])
+
+            # Display the choices on the buttons
+            choices = question["choices"]
+            for i, (choice_text, _) in enumerate(choices.items()):
+                self.choice_btns[i].config(text=choice_text, state="normal")
+
+            # Disable the next button
+
+            self.next_btn.config(state="disabled")
+    def next_question(self):
+
+        self.current_question += 1
+
+        if self.current_question < len(quiz_data):
+            # If there are more questions, show the next question
+            self.show_question()
+        else:
+            # If all questions have been answered, display the final score and end the quiz
+            last_username = self.read_last_username_from_csv()
+            highest_trait = max(self.personality_score, key=lambda k: self.personality_score[k])
+            result = (last_username, highest_trait)
+            self.controller.frames[ResultsPage].display_result(result)
+            self.controller.show_frame(ResultsPage)
+
+    def check_answer(self,choice):
+        question = quiz_data[self.current_question]
+        selected_choice = self.choice_btns[choice].cget("text")
+
+        for k,v in question["choices"].items():
+            if selected_choice in k:
+               if v=="Leader":
+                 self.personality_score["Leader"]+=1
+               elif v=="Innovator":
+                 self.personality_score["Innovator"]+=1
+               elif v=="Supporter":
+                 self.personality_score["Supporter"]+=1
+               elif v=="Analyst":
+                 self.personality_score["Analyst"]+=1
+               elif v=="Networker":
+                 self.personality_score["Networker"]+=1
+
+
+        for button in self.choice_btns:
+            button.config(state="disabled")
+
+        self.next_btn.config(state="normal")
+
+    def read_last_username_from_csv(self):
+        last_username = None
+        with open('Userdetails.csv', 'r') as file:
+            reader = csv.reader(file)
+            for row in reader:
+                if row:  # Check if the row is not empty
+                    last_username = row[0]  # Assuming the username is stored in the first column
+        return last_username
+class ResultsPage(tk.Frame):
+        def __init__(self,parent, controller):
+            tk.Frame.__init__(self, parent)
+
+            label = ttk.Label(
+                self,
+                text="Quiz Results",
+                font=("Helvetica", 24),
+                padding=(20, 20)
+            )
+            label.pack()
+
+
+            self.result_label = ttk.Label(
+                self,
+                text="",
+                font=("Helvetica", 18),
+                padding=(20, 20)
+            )
+            self.result_label.pack()
+
+            button = ttk.Button(
+                self,
+                text="Back to Start Page",
+                command=lambda: controller.show_frame(StartPage),
+                style='success.TButton'
+            )
+            button.pack(pady=20)
+
+        def display_result(self,result):
+                    name, trait = result
+                    new_line="\n"
+                    if trait=="Leader":
+                       message = f"{name}, your Workplace Personality Type is The {trait}.{new_line}You are confident, decisive, and comfortable taking charge. Colleagues often look to you for guidance."
+                    elif trait=="Innovator":
+                        message = f"{name}, your Workplace Personality Type is The {trait}.{new_line}Your creativity knows no bounds. You're always looking for ways to improve and innovate in your workflow."
+                    elif trait=="Supporter":
+                        message=f"{name}, your Workplace Personality Type is The {trait}.{new_line}You are the team's backbone, always ready to help and provide support wherever necessary."
+                    elif trait=="Analyst":
+                        message = f"{name}, your Workplace Personality Type is The {trait}.{new_line}With a keen eye for detail and a love for data, you are meticulous in your approach to problems."
+                    elif trait=="Networker":
+                        message= f"{name}, your Workplace Personality Type is The {trait}.{new_line}You excel in building relationships and thrive on interactions with colleagues and clients alike."
+                    self.result_label.config(text=message)
+        def displayBarGraph(self,personality_score):
+
+
+
+if __name__ == "__main__":
+    global current_question
+    app = PersonalityQuizApp()
+    app.mainloop()
