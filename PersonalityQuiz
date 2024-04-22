@@ -1,4 +1,5 @@
 import csv
+import random
 import tkinter as tk
 from tkinter import messagebox, ttk
 from ttkbootstrap import Style
@@ -27,10 +28,8 @@ class PersonalityQuizApp(tk.Tk):
         # Create and add frames to the container
 
         for F in (StartPage, QuizPage, ResultsPage):
-            if F=="ResultsPage":
-                frame = F(container, self,result)
-            else:
-                frame = F(container,self)
+
+            frame = F(container,self)
             self.frames[F] = frame
             frame.grid(row=0, column=0, sticky="nsew")
 
@@ -45,82 +44,67 @@ class PersonalityQuizApp(tk.Tk):
 class StartPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        label = tk.Label(self, text="Start Page")
-        label.grid(row=0,column=0,pady=10, padx=10)
 
-        self.userName=tk.StringVar()
-        self.email=tk.StringVar()
-        self.position=tk.StringVar()
-        self.field=tk.StringVar()
-        self.current_question=0
 
-        welcomeFrame = ttk.LabelFrame(self, relief='flat')
-        welcomeFrame.grid(row=0, column=0,padx=40, pady=10)
+        self.userName = tk.StringVar()
+        self.email = tk.StringVar()
+        self.position = tk.StringVar()
+        self.field = tk.StringVar()
 
-        message = "Welcome to the Workplace Personality Quiz!\nBefore you begin, kindly enter the following details:"
-        welcomeMessage = ttk.Label(welcomeFrame, text=message)
-        welcomeMessage.config(font=('Helvetica', 22))
-        welcomeMessage.grid(row=0, column=1, padx=10, pady=10)
+        welcomeFrame = ttk.LabelFrame(self, relief='flat', padding=(10, 5))
+        welcomeFrame.grid(row=1, column=0, columnspan=5, padx=20, pady=10, sticky='ew')  # Expanded to span all columns
+
+        message = "\t\t\t\t\tWelcome to the Workplace Personality Quiz!\nThis quiz is designed to help you understand your personality traits in a professional setting. Answer the following questions to learn more about your workplace personality type.\n\nBefore you begin, kindly enter the following details:\n\n\n"
+        welcomeMessage = ttk.Label(welcomeFrame, text=message, font=('Helvetica', 17))
+        welcomeMessage.grid(row=0, column=0, columnspan=5, padx=10, pady=10, sticky='ew')
 
         nameLabel = ttk.Label(welcomeFrame, text="Name:")
-        nameLabel.grid(row=1, column=0, sticky='news')
+        nameLabel.grid(row=1, column=0, sticky='e')
 
-        nameTxt = tk.Entry(welcomeFrame, textvariable=self.userName,width=5)
-        nameTxt.grid(row=1, column=1, padx=20, sticky='news')
+        nameTxt = tk.Entry(welcomeFrame, textvariable=self.userName, width=20)
+        nameTxt.grid(row=1, column=1, sticky='w')
 
         emailLabel = ttk.Label(welcomeFrame, text="E-mail address:")
-        emailLabel.grid(row=1, column=2, sticky='news')
+        emailLabel.grid(row=1, column=2, padx=(20, 0), sticky='e')
 
         emailTxt = tk.Entry(welcomeFrame, textvariable=self.email, width=20)
-        emailTxt.grid(row=1, column=3, padx=15, sticky='news')
+        emailTxt.grid(row=1, column=3, sticky='w')
 
-        positionLabel = ttk.Label(welcomeFrame, text="Position:", width=20)
-        positionLabel.grid(row=2, column=1, sticky='news')
+        positionLabel = ttk.Label(welcomeFrame, text="Position:")
+        positionLabel.grid(row=2, column=0, pady=10,sticky='e')
 
         positionValueBox = ttk.Combobox(welcomeFrame, textvariable=self.position,
                                         values=['Entry-level', 'Mid-Senior Level', 'Senior Level', 'Executive Role'],
-                                        width=20)
-        positionValueBox.grid(row=2, column=2, sticky='w')
+                                        width=17)
+        positionValueBox.grid(row=2, column=1, columnspan=2, sticky='w')
 
         fieldLabel = ttk.Label(welcomeFrame, text="Field of Work:")
-        fieldLabel.grid(row=2, column=3, padx=50)
+        fieldLabel.grid(row=2, column=2, padx=(15, 0), sticky='e')  # Added padx=(15, 0)
 
-        fieldValueBox = ttk.Combobox(welcomeFrame,textvariable=self.field,values=field_names)
-        fieldValueBox.grid(row=2, column=4)
+        fieldValueBox = ttk.Combobox(welcomeFrame, textvariable=self.field, values=field_names, width=17)
+        fieldValueBox.grid(row=2, column=3, sticky='w')  # Adjusted grid position
 
+        buttonFrame = tk.Frame(self)
+        buttonFrame.grid(row=2, column=0, columnspan=5, pady=10)
 
-        saveButton = ttk.Button(
-            welcomeFrame,
-            text="Save Details",
-            command=self.validate_details,
-            style='success.TButton'
+        saveButton = ttk.Button(buttonFrame, text="Save Details", command=self.validate_details)
+        saveButton.grid(row=0, column=0, padx=10)
 
-        )
-        saveButton.grid(row=3, column=1, pady=10)
-
-        startQuizButton = ttk.Button(
-            welcomeFrame,
-            text="Start Quiz",
-            command=lambda: controller.show_frame(QuizPage),
-            style='success.TButton'
-        )
-        startQuizButton.grid(row=3, column=2, pady=10, sticky='e')
+        startQuizButton = ttk.Button(buttonFrame, text="Start Quiz", command=lambda: controller.show_frame(QuizPage))
+        startQuizButton.grid(row=0, column=1, padx=10)
 
     def validate_details(self):
-
-        if self.userName.get() == '' or self.position.get() == '' or self.field.get() == '' or self.email.get()=='':
-            tk.messagebox.showwarning(title="Error", message="Please fill the blank fields")
+        if self.userName.get() == '' or self.position.get() == '' or self.field.get() == '' or self.email.get() == '':
+            tk.messagebox.showwarning(title="Error", message="Please fill in all the fields.")
         else:
             self.save_details()
 
     def save_details(self):
-
-        userData = [self.userName.get(), self.email.get(),self.position.get(), self.field.get()]
-
+        userData = [self.userName.get(), self.email.get(), self.position.get(), self.field.get()]
         with open('Userdetails.csv', 'a') as filewriter:
-             filewritercsv = csv.writer(filewriter)
-             filewritercsv.writerow(userData)
-             tk.messagebox.showinfo(message='Details Saved!')
+            filewritercsv = csv.writer(filewriter)
+            filewritercsv.writerow(userData)
+            tk.messagebox.showinfo(message='Details saved successfully!')
 
 class QuizPage(tk.Frame):
     def __init__(self, parent, controller):
@@ -248,12 +232,8 @@ class ResultsPage(tk.Frame):
             )
             self.result_label.pack()
 
-            self.displayChartButton = ttk.Button(
-                self,
-                text="In-Depth Analysis",
-                style='success.TButton'
-            )
-            self.displayChartButton.pack(pady=20)
+            self.canvas = tk.Canvas(self, width=500, height=400)
+            self.canvas.pack()
 
             button = ttk.Button(
                 self,
@@ -281,19 +261,50 @@ class ResultsPage(tk.Frame):
         def displayBarGraph(self,personality_score):
 
             import matplotlib.pyplot as plt
-            labels=[]
-            numbers=[]
-            for k,v in personality_score.items():
-                labels.append(k)
-                numbers.append(v)
 
+            labels = list(personality_score.keys())
+            numbers = list(personality_score.values())
 
-            pos = list(range(5))
+            self.canvas.delete("all")
 
-            plt.title("The graph shows how you scored on each trait")
-            plt.bar(pos, numbers, color='blue')
-            plt.xticks(ticks=pos, labels=labels)
-            self.displayChartButton.config(command=plt.show)
+            bar_width = 50
+            bar_spacing = 20
+            top_margin = 50
+            bottom_margin = 20
+            left_margin = 50
+            right_margin = 20
+            canvas_width = self.canvas.winfo_width()
+            canvas_height = self.canvas.winfo_height()
+
+            max_number = max(numbers)
+
+            # Add title
+            title_text = "This is the analysis showing the distribution of your personality traits as per your score"
+            title_font_size = 14
+            title_text_width = self.canvas.create_text(0, 0, text=title_text, font=("Helvetica", title_font_size),
+                                                       anchor=tk.NW)
+            title_text_bbox = self.canvas.bbox(title_text_width)
+            title_text_width = title_text_bbox[2] - title_text_bbox[0]
+            title_x = (canvas_width - title_text_width) / 2  # Center the title horizontally
+            self.canvas.delete(title_text_width)  # Remove the temporary text object
+            self.canvas.create_text(title_x, 20, text=title_text, font=("Helvetica", title_font_size), anchor=tk.N)
+
+            for i, number in enumerate(numbers):
+                bar_height = (number / max_number) * (canvas_height - top_margin - bottom_margin)
+                x0 = left_margin + i * (bar_width + bar_spacing)
+                y0 = canvas_height - bottom_margin
+                x1 = x0 + bar_width
+                y1 = y0 - bar_height
+                color = "#%06x" % random.randint(0, 0xFFFFFF)  # Generate random color
+                self.canvas.create_rectangle(x0, y0, x1, y1, fill=color)
+                self.canvas.create_text((x0 + x1) / 2, y1 - 10, text=labels[i], anchor=tk.N, font=("Helvetica", 10))
+                self.canvas.create_text((x0 + x1) / 2, y1 - 25, text=str(number), anchor=tk.N, font=("Helvetica", 10))
+
+            self.canvas.create_line(left_margin, canvas_height - bottom_margin, canvas_width - right_margin,
+                                    canvas_height - bottom_margin, width=2)
+            self.canvas.create_line(left_margin, canvas_height - bottom_margin, left_margin, top_margin, width=2)
+
+            self.canvas.update()
 
 
 
