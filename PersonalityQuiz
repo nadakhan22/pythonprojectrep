@@ -192,7 +192,9 @@ class QuizPage(tk.Frame):
             highest_trait = max(self.personality_score, key=lambda k: self.personality_score[k])
             result = (last_username, highest_trait)
             self.controller.frames[ResultsPage].display_result(result)
+            self.controller.frames[ResultsPage].displayBarGraph(self.personality_score)
             self.controller.show_frame(ResultsPage)
+
 
     def check_answer(self,choice):
         question = quiz_data[self.current_question]
@@ -246,6 +248,13 @@ class ResultsPage(tk.Frame):
             )
             self.result_label.pack()
 
+            self.displayChartButton = ttk.Button(
+                self,
+                text="In-Depth Analysis",
+                style='success.TButton'
+            )
+            self.displayChartButton.pack(pady=20)
+
             button = ttk.Button(
                 self,
                 text="Back to Start Page",
@@ -268,7 +277,23 @@ class ResultsPage(tk.Frame):
                     elif trait=="Networker":
                         message= f"{name}, your Workplace Personality Type is The {trait}.{new_line}You excel in building relationships and thrive on interactions with colleagues and clients alike."
                     self.result_label.config(text=message)
+
         def displayBarGraph(self,personality_score):
+
+            import matplotlib.pyplot as plt
+            labels=[]
+            numbers=[]
+            for k,v in personality_score.items():
+                labels.append(k)
+                numbers.append(v)
+
+
+            pos = list(range(5))
+
+            plt.title("The graph shows how you scored on each trait")
+            plt.bar(pos, numbers, color='blue')
+            plt.xticks(ticks=pos, labels=labels)
+            self.displayChartButton.config(command=plt.show)
 
 
 
