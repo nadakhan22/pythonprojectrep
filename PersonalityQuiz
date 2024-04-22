@@ -6,6 +6,7 @@ from ttkbootstrap import Style
 from QuizData import quiz_data
 from QuizData import field_names
 
+
 class PersonalityQuizApp(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
@@ -16,6 +17,7 @@ class PersonalityQuizApp(tk.Tk):
         # Create a container to hold multiple frames
         style = Style(theme="minty")
         # Configure the font size for the question and choice buttons
+        style.configure("Mint.TLabelframe", background=style.colors.primary)
         style.configure("TLabelFrame", anchor="center", relief="raised")
         style.configure("TLabel", font=("Helvetica", 18))
         style.configure("TButton", font=("Helvetica", 16))
@@ -23,15 +25,23 @@ class PersonalityQuizApp(tk.Tk):
         container.pack(side="top", fill="both", expand=True)
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)
+        self.border_frame = ttk.LabelFrame(self, text="Start Page", style="Mint.TLabelframe")
+        self.border_frame.pack(padx=20, pady=20, fill="both", expand=True)
+        # Add logo
+        logo_frame = ttk.Frame(container)
+        logo_frame.grid(row=0, column=0, sticky="nsew", pady=(10, 0))
+        logo_img = tk.PhotoImage(file="logo.png")
+        logo_label = ttk.Label(logo_frame, image=logo_img)
+        logo_label.image = logo_img
+        logo_label.pack()
 
         self.frames = {}
         # Create and add frames to the container
 
         for F in (StartPage, QuizPage, ResultsPage):
-
-            frame = F(container,self)
+            frame = F(container, self)
             self.frames[F] = frame
-            frame.grid(row=0, column=0, sticky="nsew")
+            frame.grid(row=1, column=0, sticky="nsew")
 
         # Show the initial frame
         self.show_frame(StartPage)
@@ -39,17 +49,22 @@ class PersonalityQuizApp(tk.Tk):
     def show_frame(self, cont):
         frame = self.frames[cont]
         frame.tkraise()
+        
+        if cont == StartPage:
+            frame.clear_fields()
 
 
 class StartPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
-
         self.userName = tk.StringVar()
         self.email = tk.StringVar()
         self.position = tk.StringVar()
         self.field = tk.StringVar()
+
+        self.border_frame = ttk.LabelFrame(self, text="Start Page", style="Mint.TLabelframe")
+        self.border_frame.grid(row=0, column=0, padx=20, pady=20, sticky="nsew")
 
         welcomeFrame = ttk.LabelFrame(self, relief='flat', padding=(10, 5))
         welcomeFrame.grid(row=1, column=0, columnspan=5, padx=20, pady=10, sticky='ew')  # Expanded to span all columns
@@ -71,7 +86,7 @@ class StartPage(tk.Frame):
         emailTxt.grid(row=1, column=3, sticky='w')
 
         positionLabel = ttk.Label(welcomeFrame, text="Position:")
-        positionLabel.grid(row=2, column=0, pady=10,sticky='e')
+        positionLabel.grid(row=2, column=0, pady=10, sticky='e')
 
         positionValueBox = ttk.Combobox(welcomeFrame, textvariable=self.position,
                                         values=['Entry-level', 'Mid-Senior Level', 'Senior Level', 'Executive Role'],
@@ -93,6 +108,7 @@ class StartPage(tk.Frame):
         startQuizButton = ttk.Button(buttonFrame, text="Start Quiz", command=lambda: controller.show_frame(QuizPage))
         startQuizButton.grid(row=0, column=1, padx=10)
 
+        self.clear_fields()
     def validate_details(self):
         if self.userName.get() == '' or self.position.get() == '' or self.field.get() == '' or self.email.get() == '':
             tk.messagebox.showwarning(title="Error", message="Please fill in all the fields.")
@@ -106,13 +122,21 @@ class StartPage(tk.Frame):
             filewritercsv.writerow(userData)
             tk.messagebox.showinfo(message='Details saved successfully!')
 
+    def clear_fields(self):
+        # Clear all entry fields and comboboxes
+        self.userName.set('')
+        self.email.set('')
+        self.position.set('')
+        self.field.set('')
 class QuizPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        self.controller=controller
+        self.controller = controller
         custom_frame = ttk.Frame(self)
-        custom_frame.pack(padx=20,pady=20)
-        self.current_question=0
+        custom_frame.pack(padx=20, pady=20)
+        self.border_frame = ttk.LabelFrame(self, text="Start Page", style="Mint.TLabelframe")
+        self.border_frame.pack(padx=20, pady=20, expand=True)
+        self.current_question = 0
 
         self.personality_score = {"Leader": 0,
                                   "Innovator": 0,
@@ -137,7 +161,7 @@ class QuizPage(tk.Frame):
             self.choice_button.pack(pady=5)
             self.choice_btns.append(self.choice_button)
 
-        #Create the next button
+        # Create the next button
         self.next_btn = ttk.Button(
             custom_frame,
             text="Next",
@@ -146,23 +170,23 @@ class QuizPage(tk.Frame):
         )
         self.next_btn.pack(pady=10)
 
-
         self.show_question()
 
     def show_question(self):
-            # Get the current question from the quiz_data list
-            #global current_question
-            question = quiz_data[self.current_question]
-            self.qs_label.config(text=question["question"])
+        # Get the current question from the quiz_data list
+        # global current_question
+        question = quiz_data[self.current_question]
+        self.qs_label.config(text=question["question"])
 
-            # Display the choices on the buttons
-            choices = question["choices"]
-            for i, (choice_text, _) in enumerate(choices.items()):
-                self.choice_btns[i].config(text=choice_text, state="normal")
+        # Display the choices on the buttons
+        choices = question["choices"]
+        for i, (choice_text, _) in enumerate(choices.items()):
+            self.choice_btns[i].config(text=choice_text, state="normal")
 
-            # Disable the next button
+        # Disable the next button
 
-            self.next_btn.config(state="disabled")
+        self.next_btn.config(state="disabled")
+
     def next_question(self):
 
         self.current_question += 1
@@ -170,33 +194,32 @@ class QuizPage(tk.Frame):
         if self.current_question < len(quiz_data):
             # If there are more questions, show the next question
             self.show_question()
+
         else:
-            # If all questions have been answered, display the final score and end the quiz
-            last_username = self.read_last_username_from_csv()
-            highest_trait = max(self.personality_score, key=lambda k: self.personality_score[k])
-            result = (last_username, highest_trait)
-            self.controller.frames[ResultsPage].display_result(result)
-            self.controller.frames[ResultsPage].displayBarGraph(self.personality_score)
-            self.controller.show_frame(ResultsPage)
+    # If all questions have been answered, display the final score and end the quiz
+         last_username = self.read_last_username_from_csv()
+         highest_trait = max(self.personality_score, key=lambda k: self.personality_score[k])
+         result = (last_username, highest_trait)
+         self.controller.frames[ResultsPage].display_result(result)
+         self.controller.frames[ResultsPage].displayBarGraph(self.personality_score)
+         self.controller.show_frame(ResultsPage)
 
-
-    def check_answer(self,choice):
+    def check_answer(self, choice):
         question = quiz_data[self.current_question]
         selected_choice = self.choice_btns[choice].cget("text")
 
-        for k,v in question["choices"].items():
+        for k, v in question["choices"].items():
             if selected_choice in k:
-               if v=="Leader":
-                 self.personality_score["Leader"]+=1
-               elif v=="Innovator":
-                 self.personality_score["Innovator"]+=1
-               elif v=="Supporter":
-                 self.personality_score["Supporter"]+=1
-               elif v=="Analyst":
-                 self.personality_score["Analyst"]+=1
-               elif v=="Networker":
-                 self.personality_score["Networker"]+=1
-
+                if v == "Leader":
+                    self.personality_score["Leader"] += 1
+                elif v == "Innovator":
+                    self.personality_score["Innovator"] += 1
+                elif v == "Supporter":
+                    self.personality_score["Supporter"] += 1
+                elif v == "Analyst":
+                    self.personality_score["Analyst"] += 1
+                elif v == "Networker":
+                    self.personality_score["Networker"] += 1
 
         for button in self.choice_btns:
             button.config(state="disabled")
@@ -211,101 +234,103 @@ class QuizPage(tk.Frame):
                 if row:  # Check if the row is not empty
                     last_username = row[0]  # Assuming the username is stored in the first column
         return last_username
+
+
 class ResultsPage(tk.Frame):
-        def __init__(self,parent, controller):
-            tk.Frame.__init__(self, parent)
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.border_frame = ttk.LabelFrame(self, text="Start Page", style="Mint.TLabelframe")
+        self.border_frame.pack(padx=20, pady=20, fill="both", expand=True)
 
-            label = ttk.Label(
-                self,
-                text="Quiz Results",
-                font=("Helvetica", 24),
-                padding=(20, 20)
-            )
-            label.pack()
+        label = ttk.Label(
+            self,
+            text="Quiz Results",
+            font=("Helvetica", 24),
+            padding=(20, 20)
+        )
+        label.pack()
 
+        self.result_label = ttk.Label(
+            self,
+            text="",
+            font=("Helvetica", 18),
+            padding=(20, 20)
+        )
+        self.result_label.pack()
 
-            self.result_label = ttk.Label(
-                self,
-                text="",
-                font=("Helvetica", 18),
-                padding=(20, 20)
-            )
-            self.result_label.pack()
+        self.canvas = tk.Canvas(self, width=500, height=400)
+        self.canvas.pack()
 
-            self.canvas = tk.Canvas(self, width=500, height=400)
-            self.canvas.pack()
+        button = ttk.Button(
+            self,
+            text="Back to Start Page",
+            command=lambda: controller.show_frame(StartPage),
+            style='success.TButton'
+        )
+        button.pack(pady=20)
 
-            button = ttk.Button(
-                self,
-                text="Back to Start Page",
-                command=lambda: controller.show_frame(StartPage),
-                style='success.TButton'
-            )
-            button.pack(pady=20)
+    def display_result(self, result):
+        name, trait = result
+        new_line = "\n"
+        if trait == "Leader":
+            message = f"{name}, your Workplace Personality Type is The {trait}.{new_line}You are confident, decisive, and comfortable taking charge. Colleagues often look to you for guidance."
+        elif trait == "Innovator":
+            message = f"{name}, your Workplace Personality Type is The {trait}.{new_line}Your creativity knows no bounds. You're always looking for ways to improve and innovate in your workflow."
+        elif trait == "Supporter":
+            message = f"{name}, your Workplace Personality Type is The {trait}.{new_line}You are the team's backbone, always ready to help and provide support wherever necessary."
+        elif trait == "Analyst":
+            message = f"{name}, your Workplace Personality Type is The {trait}.{new_line}With a keen eye for detail and a love for data, you are meticulous in your approach to problems."
+        elif trait == "Networker":
+            message = f"{name}, your Workplace Personality Type is The {trait}.{new_line}You excel in building relationships and thrive on interactions with colleagues and clients alike."
+        self.result_label.config(text=message)
 
-        def display_result(self,result):
-                    name, trait = result
-                    new_line="\n"
-                    if trait=="Leader":
-                       message = f"{name}, your Workplace Personality Type is The {trait}.{new_line}You are confident, decisive, and comfortable taking charge. Colleagues often look to you for guidance."
-                    elif trait=="Innovator":
-                        message = f"{name}, your Workplace Personality Type is The {trait}.{new_line}Your creativity knows no bounds. You're always looking for ways to improve and innovate in your workflow."
-                    elif trait=="Supporter":
-                        message=f"{name}, your Workplace Personality Type is The {trait}.{new_line}You are the team's backbone, always ready to help and provide support wherever necessary."
-                    elif trait=="Analyst":
-                        message = f"{name}, your Workplace Personality Type is The {trait}.{new_line}With a keen eye for detail and a love for data, you are meticulous in your approach to problems."
-                    elif trait=="Networker":
-                        message= f"{name}, your Workplace Personality Type is The {trait}.{new_line}You excel in building relationships and thrive on interactions with colleagues and clients alike."
-                    self.result_label.config(text=message)
+    def displayBarGraph(self, personality_score):
 
-        def displayBarGraph(self,personality_score):
+        import matplotlib.pyplot as plt
 
-            import matplotlib.pyplot as plt
+        labels = list(personality_score.keys())
+        numbers = list(personality_score.values())
 
-            labels = list(personality_score.keys())
-            numbers = list(personality_score.values())
+        self.canvas.delete("all")
 
-            self.canvas.delete("all")
+        bar_width = 50
+        bar_spacing = 20
+        top_margin = 50
+        bottom_margin = 20
+        left_margin = 50
+        right_margin = 20
+        canvas_width = self.canvas.winfo_width()
+        canvas_height = self.canvas.winfo_height()
 
-            bar_width = 50
-            bar_spacing = 20
-            top_margin = 50
-            bottom_margin = 20
-            left_margin = 50
-            right_margin = 20
-            canvas_width = self.canvas.winfo_width()
-            canvas_height = self.canvas.winfo_height()
+        max_number = max(numbers)
 
-            max_number = max(numbers)
+        # Add title
+        title_text = "This is the analysis showing the distribution of your personality traits as per your score"
+        title_font_size = 14
+        title_text_width = self.canvas.create_text(0, 0, text=title_text, font=("Helvetica", title_font_size),
+                                                   anchor=tk.NW)
+        title_text_bbox = self.canvas.bbox(title_text_width)
+        title_text_width = title_text_bbox[2] - title_text_bbox[0]
+        title_x = (canvas_width - title_text_width) / 2  # Center the title horizontally
+        self.canvas.delete(title_text_width)  # Remove the temporary text object
+        self.canvas.create_text(title_x, 20, text=title_text, font=("Helvetica", title_font_size), anchor=tk.N)
 
-            # Add title
-            title_text = "This is the analysis showing the distribution of your personality traits as per your score"
-            title_font_size = 14
-            title_text_width = self.canvas.create_text(0, 0, text=title_text, font=("Helvetica", title_font_size),
-                                                       anchor=tk.NW)
-            title_text_bbox = self.canvas.bbox(title_text_width)
-            title_text_width = title_text_bbox[2] - title_text_bbox[0]
-            title_x = (canvas_width - title_text_width) / 2  # Center the title horizontally
-            self.canvas.delete(title_text_width)  # Remove the temporary text object
-            self.canvas.create_text(title_x, 20, text=title_text, font=("Helvetica", title_font_size), anchor=tk.N)
+        for i, number in enumerate(numbers):
+            bar_height = (number / max_number) * (canvas_height - top_margin - bottom_margin)
+            x0 = left_margin + i * (bar_width + bar_spacing)
+            y0 = canvas_height - bottom_margin
+            x1 = x0 + bar_width
+            y1 = y0 - bar_height
+            color = "#%06x" % random.randint(0, 0xFFFFFF)  # Generate random color
+            self.canvas.create_rectangle(x0, y0, x1, y1, fill=color)
+            self.canvas.create_text((x0 + x1) / 2, y1 - 10, text=labels[i], anchor=tk.N, font=("Helvetica", 10))
+            self.canvas.create_text((x0 + x1) / 2, y1 - 25, text=str(number), anchor=tk.N, font=("Helvetica", 10))
 
-            for i, number in enumerate(numbers):
-                bar_height = (number / max_number) * (canvas_height - top_margin - bottom_margin)
-                x0 = left_margin + i * (bar_width + bar_spacing)
-                y0 = canvas_height - bottom_margin
-                x1 = x0 + bar_width
-                y1 = y0 - bar_height
-                color = "#%06x" % random.randint(0, 0xFFFFFF)  # Generate random color
-                self.canvas.create_rectangle(x0, y0, x1, y1, fill=color)
-                self.canvas.create_text((x0 + x1) / 2, y1 - 10, text=labels[i], anchor=tk.N, font=("Helvetica", 10))
-                self.canvas.create_text((x0 + x1) / 2, y1 - 25, text=str(number), anchor=tk.N, font=("Helvetica", 10))
+        self.canvas.create_line(left_margin, canvas_height - bottom_margin, canvas_width - right_margin,
+                                canvas_height - bottom_margin, width=2)
+        self.canvas.create_line(left_margin, canvas_height - bottom_margin, left_margin, top_margin, width=2)
 
-            self.canvas.create_line(left_margin, canvas_height - bottom_margin, canvas_width - right_margin,
-                                    canvas_height - bottom_margin, width=2)
-            self.canvas.create_line(left_margin, canvas_height - bottom_margin, left_margin, top_margin, width=2)
-
-            self.canvas.update()
-
+        self.canvas.update()
 
 
 if __name__ == "__main__":
