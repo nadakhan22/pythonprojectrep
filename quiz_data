@@ -1,28 +1,114 @@
+field_names = [
+    "Finance and Accounting",
+    "Information Technology (IT)",
+    "Marketing and Sales",
+    "Human Resources (HR)",
+    "Operations and Supply Chain Management",
+    "Consulting",
+    "Legal Services",
+    "Healthcare and Pharmaceuticals",
+    "Real Estate and Property Management",
+    "Energy and Utilities",
+    "Hospitality and Tourism",
+    "Education and Training",
+    "Other"
+]
+
 quiz_data = [
     {
-        "question": "When presented with a new project, your first reaction is to:",
-        "choices": ["Create an action plan and delegate tasks.", "Think of innovative approaches to tackle it.", "Support others in their roles and assist where needed.", "Support others in their roles and assist where needed.","Reach out to your network for insights and advice."],
-       
+        "question": "1.When presented with a new project, your first reaction is to:",
+        "choices": {"Create an action plan and delegate tasks.":"Leader",
+                    "Think of innovative approaches to tackle it.":"Innovator",
+                    "Support others in their roles and assist where needed.":"Supporter",
+                    "Analyze all the information and offer insights based on data.":"Analyst",
+                    "Reach out to your network for insights and advice.":"Networker"
+                    }
+
+
     },
     {
-        "question": "You deal with work-related stress by:",
-        "choices": ["Taking control of the situation and leading the team through the challenge.", "Brainstorming creative solutions to alleviate the issue.", "Offering a helping hand to ease the burden on your coworkers.", "Gathering data to understand the stressors and systematically addressing them.","Connecting with others to vent and find comfort in shared experiences."],
-       
+        "question": "2.You deal with work-related stress by:",
+        "choices": {"Taking control of the situation and leading the team through the challenge.":"Leader",
+                    "Brainstorming creative solutions to alleviate the issue.":"Innovator",
+                    "Offering a helping hand to ease the burden on your coworkers.":"Supporter",
+                    "Gathering data to understand the stressors and systematically addressing them.":"Analyst",
+                    "Connecting with others to vent and find comfort in shared experiences.":"Networker"}
+
     },
     {
-        "question": "During a team meeting, you are more likely to:",
-        "choices": ["Direct the discussions and make executive decisions.", "Suggest out-of-the-box ideas others haven't considered.", "Listen actively and provide encouragement and support.", "Closely examine reports and figures before drawing conclusions.","Network and build rapport with coworkers."],
-    
+        "question": "3.During a team meeting, you are more likely to:",
+        "choices": {"Direct the discussions and make executive decisions.":"Leader",
+                    "Suggest out-of-the-box ideas others haven't considered.":"Innovator",
+                    "Listen actively and provide encouragement and support.":"Supporter",
+                    "Closely examine reports and figures before drawing conclusions.":"Analyst",
+                    "Network and build rapport with coworkers.":"Networker"}
+
     },
     {
-        "question": "If a conflict arises in the workplace, you tend to:?",
-        "choices": ["Step in to mediate and resolve the issue authoritatively.", "Think creatively to find an amicable solution that satisfies all parties.", "Calm tensions by lending a sympathetic ear and providing emotional support.", "Analyze the root cause and propose a logical resolution.","Leverage your interpersonal skills to facilitate communication between parties."],
-     
+        "question": "4.If a conflict arises in the workplace, you tend to:",
+        "choices": {"Step in to mediate and resolve the issue authoritatively.":"Leader",
+                    "Think creatively to find an amicable solution that satisfies all parties.":"Innovator",
+                    "Calm tensions by lending a sympathetic ear and providing emotional support.":"Supporter",
+                    "Analyze the root cause and propose a logical resolution.":"Analyst",
+                    "Leverage your interpersonal skills to facilitate communication between parties.":"Networker"}
+
     },
     {
-        "question": "When it comes to multitasking, you:?",
-        "choices": ["Step in to mediate and resolve the issue authoritatively.", "Think creatively to find an amicable solution that satisfies all parties.", "Calm tensions by lending a sympathetic ear and providing emotional support.", "Analyze the root cause and propose a logical resolution.","Leverage your interpersonal skills to facilitate communication between parties."],
-     
+        "question": "5.When it comes to multitasking, you:",
+        "choices": {"Step in to mediate and resolve the issue authoritatively.":"Leader",
+                    "Think creatively to find an amicable solution that satisfies all parties.":"Innovator",
+                    "Calm tensions by lending a sympathetic ear and providing emotional support.":"Supporter",
+                    "Analyze the root cause and propose a logical resolution.":"Analyst",
+                    "Leverage your interpersonal skills to facilitate communication between parties.":"Networker"}
+
+    },
+    {
+        "question": "6.In terms of professional development, you are most focused on:",
+        "choices": {"Seeking leadership roles and developing management skills.":"Leader",
+                    "Learning new techniques and approaches to enhance your creativity.":"Innovator",
+                    "Expanding your knowledge on how to better support your team and clients.":"Supporter",
+                    "Gaining expertise in data analysis and critical thinking.":"Analyst",
+                    "Improving your networking abilities and interpersonal skills.":"Networker"}
+
+    },
+    {
+        "question": "7. You typically build workplace relationships by:",
+        "choices": {"Guiding and mentoring others, cultivating respect and trust.":"Leader",
+                    "Connecting with colleagues over new and exciting ideas.":"Innovator",
+                    "Being dependable and always ready to lend a hand.":"Supporter",
+                    "Engaging in intellectual discussions and sharing knowledge.":"Analyst",
+                    "Making an effort to get to know everyone and ensuring a friendly environment.":"Networker"}
+
+    },
+
+    {
+        "question": "8.Your approach to decision-making is usually:",
+        "choices": {"Quick and assertive, taking charge of the situation.":"Leader",
+                    "Flexible and open-minded, often looking for new angles.":"Innovator",
+                    "Considerate of your teammates' input and feelings.":"Supporter",
+                    "Data-driven, basing decisions on thorough research and analysis.":"Analyst",
+                    "Informed by discussions with a diverse group of people.":"Networker"}
+
+    },
+
+    {
+        "question": "9.When faced with a tight deadline, you:",
+        "choices":{"Keep the team motivated and on-track to deliver on time.":"Leader",
+                    "Use creative shortcuts to maximize time and efficiency.":"Innovator",
+                    "Help others manage their workload to ensure collective success.":"Supporter",
+                    "Carefully plan your approach to optimize productivity without compromising quality.":"Analyst",
+                    "Communicate with all relevant parties to ensure expectations are managed.":"Networker"}
+
+    },
+
+    {
+        "question": "10. Your favorite aspect of your job is likely to be:",
+        "choices": {"Leading a team towards success and achieving shared goals.":"Leader",
+                    "The freedom to express yourself creatively and innovate.":"Innovator",
+                    "The satisfaction of helping and empowering others.":"Supporter",
+                    "The Analyzing data and using insights to drive strategies.":"Analyst",
+                    "The opportunity to meet new people and foster professional relationships.":"Networker"}
+
     }
-   
+
 ]
