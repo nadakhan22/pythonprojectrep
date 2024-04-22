@@ -1,4 +1,4 @@
-## Workplace Personality Quiz
+# Workplace Personality Quiz
 Welcome to the Workplace Personality Quiz! This application is designed to help users understand their personality traits in a professional setting by answering a series of questions.
 
 # Features
@@ -12,17 +12,18 @@ To run the Workplace Personality Quiz locally, follow these steps:
 
 1.Clone the repository to your local machine:
 bash
-2.Copy code
+Copy code
 git clone https://github.com/your-username/workplace-personality-quiz.git
-3.Navigate to the project directory:
+
+2.Navigate to the project directory:
 bash
-4.Copy code
+.Copy code
 cd workplace-personality-quiz
-5.Install the required dependencies:
+3.Install the required dependencies:
 bash
 Copy code
 pip install -r requirements.txt
-Run the application:
+4.Run the application:
 bash
 Copy code
 python main.py
