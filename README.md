@@ -2,12 +2,12 @@
 Welcome to the Workplace Personality Quiz! This application is designed to help users understand their personality traits in a professional setting by answering a series of questions.
 
 # Features
-# User Registration: Before starting the quiz, users are prompted to enter their name, email, position, and field of work.
-# Multiple Choice Questions: The quiz presents users with a series of multiple-choice questions related to workplace scenarios.
-# Personality Assessment: Based on the user's responses, the application assesses their workplace personality type, such as Leader, Innovator, Supporter, Analyst, or Networker.
-# Results Display: After completing the quiz, users receive feedback on their workplace personality type along with a detailed description.
-# Bar Graph Visualization: Users can visualize the distribution of their personality traits through a bar graph.
-# #Installation
+User Registration: Before starting the quiz, users are prompted to enter their name, email, position, and field of work.
+Multiple Choice Questions: The quiz presents users with a series of multiple-choice questions related to workplace scenarios.
+Personality Assessment: Based on the user's responses, the application assesses their workplace personality type, such as Leader, Innovator, Supporter, Analyst, or Networker.
+Results Display: After completing the quiz, users receive feedback on their workplace personality type along with a detailed description.
+Bar Graph Visualization: Users can visualize the distribution of their personality traits through a bar graph.
+# Installation
 To run the Workplace Personality Quiz locally, follow these steps:
 
 1.Clone the repository to your local machine:
